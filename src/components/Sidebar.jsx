@@ -27,6 +27,12 @@ const SECTIONS = [
       { num: '09', label: 'פרומפטים', path: '/prompts' },
     ],
   },
+  {
+    label: 'סיכום',
+    items: [
+      { num: '10', label: 'כרטיס הפרויקט', path: '/project-card' },
+    ],
+  },
 ];
 
 function SunIcon() {

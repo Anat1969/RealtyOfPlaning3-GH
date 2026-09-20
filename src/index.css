@@ -319,6 +319,44 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
   opacity: 0.9;
 }
 
+/* ===== Global project-progress bar ===== */
+.progress-top {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 240px; /* leave room for the fixed sidebar on desktop */
+  height: 3px;
+  background: var(--surface2);
+  z-index: 70;
+}
+.progress-top-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.4s ease;
+}
+@media (max-width: 768px) {
+  .progress-top {
+    inset-inline-end: 0;
+    top: 56px; /* sit just under the mobile top bar */
+  }
+}
+
+/* ===== Print: Project Card only ===== */
+@media print {
+  .app-sidebar,
+  .mobile-topbar,
+  .sidebar-backdrop,
+  .progress-top,
+  .skip-link,
+  .no-print { display: none !important; }
+
+  .layout-main { margin: 0 !important; padding: 0 !important; }
+  html, body { background: #fff !important; }
+  .elevate { box-shadow: none !important; }
+  @page { margin: 16mm; }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

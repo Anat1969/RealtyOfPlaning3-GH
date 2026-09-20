@@ -3,6 +3,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
+import { useProject } from '../context/ProjectContext';
 import { getTool1Output, LIMIT_MAP, getTool3Output, getTool4Output, getTool5Status, SYNTHESIS_QUESTIONS, SYNTHESIS_INSTRUCTION } from '../constants/toolsLogic';
 
 const TOOL_DEFS = [
@@ -22,8 +23,9 @@ const PRESENCE_COLORS = {
 };
 
 export default function Tools() {
+  const { project } = useProject();
   const [open, setOpen] = useState([]);
-  const [t1, setT1] = useState('');
+  const [t1, setT1] = useState(() => project.intention || ''); // prefilled from the project intention, editable
   const [t2, setT2] = useState('intimate');
   const [t3, setT3] = useState('');
   const [t4a, setT4a] = useState('');

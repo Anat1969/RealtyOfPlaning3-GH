@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { migrateAllLegacy } from '@/lib/imageStore'
+import { ProjectProvider } from '@/context/ProjectContext'
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Layout from './components/Layout';
@@ -15,31 +16,35 @@ import Relations from './pages/Relations';
 import Calibration from './pages/Calibration';
 import Tools from './pages/Tools';
 import Prompts from './pages/Prompts';
+import ProjectCard from './pages/ProjectCard';
 
 function App() {
   // Move any images saved by the old (localStorage) version into durable IndexedDB
   useEffect(() => { migrateAllLegacy(); }, []);
 
   return (
-    <QueryClientProvider client={queryClientInstance}>
-      <Router>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Introduction />} />
-            <Route path="/tension-room" element={<TensionRoom />} />
-            <Route path="/disciplines" element={<Disciplines />} />
-            <Route path="/synthesis" element={<Synthesis />} />
-            <Route path="/criteria" element={<Criteria />} />
-            <Route path="/relations" element={<Relations />} />
-            <Route path="/calibration" element={<Calibration />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/prompts" element={<Prompts />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Route>
-        </Routes>
-      </Router>
-      <Toaster />
-    </QueryClientProvider>
+    <ProjectProvider>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Introduction />} />
+              <Route path="/tension-room" element={<TensionRoom />} />
+              <Route path="/disciplines" element={<Disciplines />} />
+              <Route path="/synthesis" element={<Synthesis />} />
+              <Route path="/criteria" element={<Criteria />} />
+              <Route path="/relations" element={<Relations />} />
+              <Route path="/calibration" element={<Calibration />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/prompts" element={<Prompts />} />
+              <Route path="/project-card" element={<ProjectCard />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Route>
+          </Routes>
+        </Router>
+        <Toaster />
+      </QueryClientProvider>
+    </ProjectProvider>
   )
 }
 

@@ -4,13 +4,10 @@ import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
-import { getTension } from '../constants/tensionLogic';
+import { getTension, FEEL_LABELS } from '../constants/tensionLogic';
+import { useProject } from '../context/ProjectContext';
 
-const FEELINGS = [
-  { key: 'warm', label: 'חמים' },
-  { key: 'cool', label: 'קריר' },
-  { key: 'neutral', label: 'ניטרלי' },
-];
+const FEELINGS = Object.entries(FEEL_LABELS).map(([key, label]) => ({ key, label }));
 
 /* One field wrapper — highlights its truth-colour on focus */
 function Field({ color, focused, label, hint, children }) {
@@ -35,9 +32,8 @@ function Field({ color, focused, label, hint, children }) {
 
 export default function TensionRoom() {
   const navigate = useNavigate();
-  const [word, setWord] = useState('');
-  const [width, setWidth] = useState(8);
-  const [feel, setFeel] = useState('neutral');
+  const { project, update } = useProject();
+  const { intention: word, width, feel } = project;
   const [focused, setFocused] = useState(null);
 
   const result = getTension({ word, width, feel });
@@ -81,7 +77,7 @@ export default function TensionRoom() {
           <input
             type="text"
             value={word}
-            onChange={(e) => setWord(e.target.value)}
+            onChange={(e) => update({ intention: e.target.value })}
             onFocus={() => setFocused('word')}
             onBlur={() => setFocused(null)}
             placeholder="אינטימי"
@@ -104,7 +100,7 @@ export default function TensionRoom() {
               min={2}
               max={20}
               value={width}
-              onChange={(e) => setWidth(+e.target.value)}
+              onChange={(e) => update({ width: +e.target.value })}
               onFocus={() => setFocused('width')}
               onBlur={() => setFocused(null)}
               aria-label="רוחב החלל במטרים"
@@ -126,7 +122,7 @@ export default function TensionRoom() {
                 <button
                   key={f.key}
                   type="button"
-                  onClick={() => setFeel(f.key)}
+                  onClick={() => update({ feel: f.key })}
                   onFocus={() => setFocused('feel')}
                   onBlur={() => setFocused(null)}
                   aria-pressed={active}

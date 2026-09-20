@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
-import { CAL_PROFILES } from '../constants/data';
+import { DEFAULT_CALIBRATION, getProfile } from '../lib/calibration';
+import { useProject } from '../context/ProjectContext';
 
 const SLIDERS = [
   { key: 'c1', label: 'כוונה מנוסחת', src: 'text' },
@@ -14,13 +14,12 @@ const SLIDERS = [
   { key: 'c6', label: 'רגע הסינתזה', src: 'between' },
 ];
 
-const DEFAULT_VALUES = { c1: 70, c2: 80, c3: 75, c4: 85, c5: 90, c6: 70 };
-
 export default function Calibration() {
-  const [values, setValues] = useState(DEFAULT_VALUES);
+  const { project, update } = useProject();
+  const values = project.calibration || DEFAULT_CALIBRATION;
 
-  const avg = Math.round(Object.values(values).reduce((a, b) => a + b, 0) / 6);
-  const profile = CAL_PROFILES.find(p => avg >= p.minAvg && avg <= p.maxAvg) || CAL_PROFILES[CAL_PROFILES.length - 1];
+  const setValue = (key, v) => update({ calibration: { ...values, [key]: v } });
+  const { avg, profile } = getProfile(values);
 
   return (
     <div>
@@ -47,7 +46,7 @@ export default function Calibration() {
                 min={0}
                 max={100}
                 value={values[key]}
-                onChange={e => setValues(prev => ({ ...prev, [key]: +e.target.value }))}
+                onChange={e => setValue(key, +e.target.value)}
                 aria-label={label}
                 className="flex-1"
                 style={{ accentColor: c }}

@@ -3,6 +3,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
+import { useProject } from '../context/ProjectContext';
 import { PROMPTS } from '../constants/prompts';
 
 const TAB_KEYS = ['sketch', 'technical', 'render'];
@@ -12,6 +13,7 @@ const TAB_LABELS = { sketch: 'סקיצה', technical: 'שרטוט טכני', ren
 const PROMPT_SRC = { 1: 'text', 2: 'number', 3: 'visual', 4: 'between', 5: 'between', 6: 'between' };
 
 export default function Prompts() {
+  const { project } = useProject();
   const [open, setOpen] = useState([]);
   const [tabs, setTabs] = useState({});
   const [copied, setCopied] = useState(null);
@@ -59,6 +61,20 @@ export default function Prompts() {
         what="בחר קריטריון, בחר סוג (סקיצה / שרטוט / רנדר), העתק את הפרומפט, ודא שהוא מתאים לפרויקט שלך לפני השימוש."
         why="פרומפט כללי נותן תוצאה כללית. ההתאמה לפרויקט הספציפי — שינוי חומר, מידה, אווירה — היא מה שהופך את הכלי לאדריכלי."
       />
+
+      {project.intention && project.intention.trim() && (
+        <div
+          className="rounded-lg px-4 py-3 mb-6 flex items-center gap-2.5"
+          style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber)' }}
+        >
+          <span className="rounded-full flex-shrink-0" style={{ width: 8, height: 8, background: 'var(--amber)' }} />
+          <p className="text-sm" style={{ color: 'var(--text)' }}>
+            מבוסס על הכוונה שלך:{' '}
+            <strong className="font-medium" style={{ color: 'var(--paper)' }}>{project.intention}</strong>
+            {' '}— התאימי את הפרומפטים להקשר הזה.
+          </p>
+        </div>
+      )}
 
       <SectionLabel>שמונה עשר פרומפטים</SectionLabel>
       <div className="space-y-4">

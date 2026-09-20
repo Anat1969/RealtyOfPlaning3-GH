@@ -12,6 +12,8 @@
 //   otherwise                              → harmony
 // Keyword lists are substrings so inflected Hebrew forms still match.
 
+export const FEEL_LABELS = { warm: 'חמים', cool: 'קריר', neutral: 'ניטרלי' };
+
 const INTIMATE = ['אינטימי', 'חמים', 'קרוב', 'מוגן', 'פרטי', 'שקט', 'נעים', 'חמימות', 'אינטימיות', 'כינוס', 'מקלט', 'מחסה'];
 const OPEN = ['פתוח', 'רחב', 'ציבורי', 'אוורירי', 'מרווח', 'פתיחות', 'חשוף', 'מונומנטלי', 'עצום'];
 

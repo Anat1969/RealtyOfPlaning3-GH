@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import { useProgress } from '../hooks/useProgress';
 
 export default function Layout() {
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const progress = useProgress();
 
   // Page transition + close the mobile drawer on navigation
   useEffect(() => {
@@ -33,6 +35,12 @@ export default function Layout() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <a href="#main-content" className="skip-link">דלג לתוכן</a>
+
+      {/* Real, cumulative project progress — subtle amber bar at the top of the content */}
+      <div className="progress-top no-print" role="progressbar" aria-label="התקדמות מילוי הפרויקט" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+        <div className="progress-top-fill" style={{ width: `${progress}%` }} />
+      </div>
+
 
       {/* Mobile top bar */}
       <div className="mobile-topbar">
