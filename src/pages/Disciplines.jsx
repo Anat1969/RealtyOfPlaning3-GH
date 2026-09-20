@@ -1,8 +1,10 @@
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
+import InsightImage from '../components/InsightImage';
 import { ACCENT } from '../lib/accent';
 import { DISCIPLINES } from '../constants/data';
+import { DISCIPLINE_PROMPTS } from '../constants/insightPrompts';
 
 export default function Disciplines() {
   return (
@@ -27,6 +29,18 @@ export default function Disciplines() {
             <article key={d.id} className="elevate bg-card border border-border rounded-lg overflow-hidden">
               {/* vivid top accent bar */}
               <div style={{ height: 4, background: c }} />
+
+              {/* Visual insight — prompt + drag/paste/upload image frame */}
+              <div style={{ padding: '16px 16px 0' }}>
+                <InsightImage
+                  id={`disc-${d.id}`}
+                  prompt={DISCIPLINE_PROMPTS[d.id]}
+                  color={c}
+                  bg={bg}
+                  ratio="16 / 10"
+                  label="המחשת השפה"
+                />
+              </div>
 
               {/* Card header — clear hierarchy */}
               <div className="p-6 border-b border-border">

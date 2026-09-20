@@ -2,8 +2,10 @@ import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
+import InsightImage from '../components/InsightImage';
 import { ACCENT } from '../lib/accent';
 import { CRITERIA } from '../constants/data';
+import { CRITERION_PROMPTS } from '../constants/insightPrompts';
 
 export default function Criteria() {
   const [expanded, setExpanded] = useState([]);
@@ -74,6 +76,18 @@ export default function Criteria() {
                     >
                       {crit.sourceLabel}
                     </span>
+
+                    {/* Visual insight — prompt + drag/paste/upload image frame */}
+                    <div className="pt-2">
+                      <InsightImage
+                        id={`crit-${crit.id}`}
+                        prompt={CRITERION_PROMPTS[crit.id]}
+                        color={c}
+                        bg={bg}
+                        ratio="16 / 9"
+                        label="המחשת הקריטריון"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
