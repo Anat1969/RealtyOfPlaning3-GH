@@ -7,23 +7,24 @@ const SECTIONS = [
     label: 'חשיפה',
     items: [
       { num: '01', label: 'מבוא למודל', path: '/' },
-      { num: '02', label: 'שלוש הדיסציפלינות', path: '/disciplines' },
-      { num: '03', label: 'רגע הסינתזה', path: '/synthesis' },
+      { num: '02', label: 'חדר המתח', path: '/tension-room' },
+      { num: '03', label: 'שלוש הדיסציפלינות', path: '/disciplines' },
+      { num: '04', label: 'רגע הסינתזה', path: '/synthesis' },
     ],
   },
   {
     label: 'הבנה',
     items: [
-      { num: '04', label: 'ששת הקריטריונים', path: '/criteria' },
-      { num: '05', label: 'מפת יחסים', path: '/relations' },
-      { num: '06', label: 'כיול וריאציות', path: '/calibration' },
+      { num: '05', label: 'ששת הקריטריונים', path: '/criteria' },
+      { num: '06', label: 'מפת יחסים', path: '/relations' },
+      { num: '07', label: 'כיול וריאציות', path: '/calibration' },
     ],
   },
   {
     label: 'שימוש',
     items: [
-      { num: '07', label: 'שישת הכלים', path: '/tools' },
-      { num: '08', label: 'פרומפטים', path: '/prompts' },
+      { num: '08', label: 'שישת הכלים', path: '/tools' },
+      { num: '09', label: 'פרומפטים', path: '/prompts' },
     ],
   },
 ];

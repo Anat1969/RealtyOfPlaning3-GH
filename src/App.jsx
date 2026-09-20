@@ -7,6 +7,7 @@ import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Layout from './components/Layout';
 import Introduction from './pages/Introduction';
+import TensionRoom from './pages/TensionRoom';
 import Disciplines from './pages/Disciplines';
 import Synthesis from './pages/Synthesis';
 import Criteria from './pages/Criteria';
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Introduction />} />
+            <Route path="/tension-room" element={<TensionRoom />} />
             <Route path="/disciplines" element={<Disciplines />} />
             <Route path="/synthesis" element={<Synthesis />} />
             <Route path="/criteria" element={<Criteria />} />
