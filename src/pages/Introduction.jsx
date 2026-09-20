@@ -1,63 +1,107 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LandingScreen from '../components/LandingScreen';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
+import LanguagesVenn from '../components/LanguagesVenn';
 import { DISCIPLINES } from '../constants/data';
 
-/* Small labelled divider that opens a content zone —
-   keeps the CONTENT visually distinct from the guidance (the "tool"). */
+/* Theme-aware colours (richer in light mode than the dark-tuned hex in data.js) */
+const VAR = { text: 'var(--purple)', number: 'var(--teal)', visual: 'var(--amber)' };
+const VARBG = { text: 'var(--purple-bg)', number: 'var(--teal-bg)', visual: 'var(--amber-bg)' };
+
+/* Labelled divider that opens a CONTENT zone (kept distinct from the tool/guidance) */
 function SectionLabel({ children }) {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground whitespace-nowrap">
+      <span className="font-mono text-[11px] uppercase tracking-[0.14em] whitespace-nowrap" style={{ color: 'var(--text2)' }}>
         {children}
       </span>
-      <span className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+      <span className="flex-1 rule-gradient" style={{ opacity: 0.45 }} />
     </div>
   );
 }
 
-/* Discipline card with a deliberate 3-level font hierarchy:
-   1) name   — bullet + large Playfair (primary / most important)
-   2) truth  — mono, coloured (the meaning / category)
-   3) tagline — Heebo, muted (supporting body) */
-function DisciplineCard({ d }) {
+/* ── Living micro-visuals: each card *shows* what its language does ── */
+
+function CyclingWord({ color }) {
+  const words = ['מעבר', 'סף', 'מחסה', 'מפגש'];
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI(x => (x + 1) % words.length), 1900);
+    return () => clearInterval(t);
+  }, []);
   return (
-    <article
-      className="card-hover relative bg-card border border-border rounded-lg p-6 pt-5 overflow-hidden"
-      style={{ borderRight: `3px solid ${d.accentColor}` }}
-    >
-      {/* Decorative discipline glyph — faint, does not compete with the title */}
-      <span
-        aria-hidden="true"
-        className="absolute top-3 left-4 font-mono select-none"
-        style={{ fontSize: 40, lineHeight: 1, color: d.accentColor, opacity: 0.14 }}
-      >
-        {d.icon}
-      </span>
+    <span style={{ fontFamily: 'var(--font-playfair)', fontSize: 20, color }}>
+      {words[i]}<span className="caret" />
+    </span>
+  );
+}
 
-      {/* Level 1 — title: bullet + size */}
-      <div className="flex items-center gap-2.5 mb-2">
-        <span
-          className="rounded-full flex-shrink-0"
-          style={{ width: 9, height: 9, background: d.accentColor }}
-        />
-        <h3 className="font-playfair text-foreground leading-tight" style={{ fontSize: 22 }}>
-          {d.name}
-        </h3>
+function DimensionMark({ color }) {
+  return (
+    <svg viewBox="0 0 220 34" width="100%" style={{ maxWidth: 220 }} aria-hidden="true">
+      <text x="110" y="10" textAnchor="middle" style={{ fill: color, fontFamily: 'var(--font-mono)', fontSize: 11 }}>2.40 מ׳</text>
+      <g className="dim-grow">
+        <line x1="12" y1="24" x2="208" y2="24" stroke={color} strokeWidth="1.5" />
+        <line x1="12" y1="17" x2="12" y2="31" stroke={color} strokeWidth="1.5" />
+        <line x1="208" y1="17" x2="208" y2="31" stroke={color} strokeWidth="1.5" />
+      </g>
+    </svg>
+  );
+}
+
+function SketchMark({ color }) {
+  return (
+    <svg viewBox="0 0 220 34" width="100%" style={{ maxWidth: 220 }} aria-hidden="true">
+      <path className="sketch-path" d="M10 24 C 44 4, 74 30, 104 16 S 168 30, 210 8" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function MicroVisual({ id, color }) {
+  if (id === 'text') {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[10px]" style={{ color: 'var(--text3)' }}>מילה אחת ←</span>
+        <CyclingWord color={color} />
       </div>
+    );
+  }
+  if (id === 'number') return <DimensionMark color={color} />;
+  return <SketchMark color={color} />;
+}
 
-      {/* Level 2 — meaning */}
-      <p
-        className="font-mono text-[11px] uppercase tracking-[0.14em] mb-3"
-        style={{ color: d.accentColor }}
-      >
-        {d.truth}
-      </p>
+function LanguageCard({ d }) {
+  const color = VAR[d.id];
+  const bg = VARBG[d.id];
+  return (
+    <article className="elevate bg-card border border-border rounded-lg overflow-hidden">
+      {/* vivid top accent bar */}
+      <div style={{ height: 4, background: color }} />
+      <div className="p-6">
+        {/* Level 1 — title: bullet + size */}
+        <div className="flex items-center gap-2.5 mb-2.5">
+          <span className="rounded-full flex-shrink-0" style={{ width: 10, height: 10, background: color }} />
+          <h3 className="font-playfair leading-tight" style={{ fontSize: 23, color: 'var(--paper)' }}>{d.name}</h3>
+        </div>
 
-      {/* Level 3 — body */}
-      <p className="text-muted-foreground text-sm leading-relaxed">{d.tagline}</p>
+        {/* Level 2 — meaning (vivid chip) */}
+        <span
+          className="inline-block font-mono text-[10px] uppercase tracking-[0.12em] rounded-full px-2.5 py-1 mb-3"
+          style={{ background: bg, color }}
+        >
+          {d.truth}
+        </span>
+
+        {/* Level 3 — body */}
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--text2)' }}>{d.tagline}</p>
+
+        {/* Experiential micro-visual */}
+        <div className="mt-4 pt-4" style={{ borderTop: '1px dashed var(--border2)' }}>
+          <MicroVisual id={d.id} color={color} />
+        </div>
+      </div>
     </article>
   );
 }
@@ -79,7 +123,7 @@ export default function Introduction() {
       <ScreenHeader
         eyebrow="מודל הצלחה — מבוא"
         title="עבודת האדריכל כ[italic amber]מקור[/]"
-        subtitle="האדריכל עובדת תמיד בשלוש שפות במקביל — טקסט, מספר, וויזואליזציה. המודל לא מלמד איך לעבוד, הוא מגלה מה כבר קורה."
+        subtitle="שלוש שפות פועלות בכל תכנון — טקסט, מספר, וויזואליזציה. המודל לא מלמד איך לעבוד, הוא מגלה מה כבר קורה — והופך אותו לכלי."
         progress={12}
       />
       <PageGuide
@@ -90,85 +134,53 @@ export default function Introduction() {
       {/* ===== Content layer ===== */}
       <SectionLabel>התוכן — נקודת הפתיחה</SectionLabel>
 
-      {/* Lead paragraph */}
-      <p className="text-foreground/90 leading-loose mb-4" style={{ fontSize: 18, fontWeight: 300, maxWidth: 640 }}>
-        כל אדריכלית עובדת בו-זמנית בשלוש שפות: <strong className="font-medium text-foreground">מילים</strong> שמנסחות כוונה,
-        {' '}<strong className="font-medium text-foreground">מספרים</strong> שמכריעים חוויה, ו<strong className="font-medium text-foreground">תמונות</strong> שחושפות את מה שהגוף כבר יודע.
+      <p className="leading-snug mb-5" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(24px, 4vw, 34px)', color: 'var(--paper)', maxWidth: 720 }}>
+        כל אדריכלית מדברת <span style={{ color: 'var(--purple)' }}>שלוש שפות</span> בו-זמנית —
+        גם כשהיא לא שמה לב.
       </p>
-      <p className="text-muted-foreground leading-loose mb-10" style={{ maxWidth: 640 }}>
-        לרוב זה קורה מבלי משים. המודל הזה לא מוסיף שיטה חדשה — הוא נותן שם לתהליך שכבר מתרחש בכל תכנון,
-        וכך הופך אינטואיציה חמקמקה לכלי שאפשר לכוון, לתעד, ולחזור אליו.
+      <p className="leading-loose mb-12" style={{ fontSize: 17, color: 'var(--text)', maxWidth: 640 }}>
+        מילים מנסחות כוונה. מספרים מכריעים חוויה. תמונות חושפות את מה שהגוף כבר יודע.
+        המודל הזה לא מוסיף שיטה — הוא נותן שם למה שכבר קורה, והופך אינטואיציה חמקמקה
+        לכלי שאפשר לכוון, לתעד, ולחזור אליו.
       </p>
 
-      {/* Three disciplines */}
-      <SectionLabel>שלוש השפות</SectionLabel>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+      {/* Three languages */}
+      <SectionLabel>שלוש השפות שאת כבר מדברת</SectionLabel>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
         {DISCIPLINES.map((d) => (
-          <DisciplineCard key={d.id} d={d} />
+          <LanguageCard key={d.id} d={d} />
         ))}
       </div>
 
-      {/* Core idea */}
-      <SectionLabel>הרעיון המרכזי</SectionLabel>
-      <div className="bg-card border border-border rounded-lg p-6 md:p-8 mb-6">
-        <div className="flex items-center gap-2.5 mb-5">
-          <span className="rounded-full flex-shrink-0" style={{ width: 9, height: 9, background: 'var(--coral)' }} />
-          <h3 className="font-playfair text-foreground leading-tight" style={{ fontSize: 22 }}>
-            הידע נולד ב<em style={{ fontStyle: 'italic', color: 'var(--coral)' }}>נקודת החיכוך</em>
-          </h3>
-        </div>
-        <p className="text-muted-foreground leading-relaxed mb-6" style={{ maxWidth: 620 }}>
-          אף אחת משלוש השפות לא מייצרת אדריכלות לבדה. הרעיון האמיתי מופיע דווקא כשהן נפגשות —
-          כשהמספר סותר את המילה, כשהסקיצה מגלה מה שלא נכתב. המתח הזה הוא לא תקלה שצריך ליישר; הוא המנוע.
-        </p>
-
-        {/* Tension → synthesis diagram */}
-        <div className="flex items-center justify-center gap-2.5 flex-wrap mb-5">
-          {[
-            { label: 'טקסט', color: '#7F77DD' },
-            { label: 'מספר', color: '#1D9E75' },
-            { label: 'ויזואל', color: '#EF9F27' },
-          ].map((node, i) => (
-            <div key={i} className="flex items-center gap-2.5">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-mono font-medium"
-                style={{ background: `${node.color}22`, color: node.color, border: `1px solid ${node.color}55` }}
-              >
-                {node.label.slice(0, 1)}
-              </div>
-              <span className="text-muted-foreground text-xs font-mono">{node.label}</span>
-              {i < 2 && <span className="text-muted-foreground/40">+</span>}
-            </div>
-          ))}
-          <span className="text-muted-foreground/40 mx-1">←</span>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono" style={{ color: 'var(--coral)' }}>מתח</span>
-            <span className="text-muted-foreground/40">←</span>
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-mono font-medium"
-              style={{ background: 'rgba(216,90,48,0.15)', color: '#D85A30', border: '1px solid rgba(216,90,48,0.4)' }}
-            >
-              ✦
-            </div>
-            <span className="text-xs font-mono" style={{ color: 'var(--coral)' }}>סינתזה</span>
-          </div>
-        </div>
-        <p className="text-muted-foreground/80 text-sm text-center">
-          הידע נולד בנקודת החיכוך — לא בכל אחת מהשפות בנפרד.
-        </p>
+      {/* Where the idea is born — interactive Venn */}
+      <SectionLabel>איפה נולד הרעיון</SectionLabel>
+      <p className="leading-relaxed mb-6" style={{ fontSize: 17, color: 'var(--text)', maxWidth: 640 }}>
+        לא בתוך שפה אחת — אלא במקום שבו שלושתן נפגשות. המתח ביניהן הוא המנוע, לא התקלה.
+        נסי בעצמך:
+      </p>
+      <div className="mb-14">
+        <LanguagesVenn />
       </div>
 
-      {/* Principle note (content) */}
-      <div className="border-r-2 pr-4 py-1 mb-10" style={{ borderColor: 'var(--amber)' }}>
-        <p className="text-muted-foreground leading-relaxed" style={{ maxWidth: 620 }}>
-          המודל לא מוסיף כלים חדשים לעבודת האדריכל — הוא מגלה שהכלים שכבר בשימוש הם שלוש שפות נפרדות,
-          ושכשהן פועלות יחד הן מייצרות ידע שאף אחת מהן לא יכולה להגיע אליו לבד.
+      {/* Principle — vivid pull-quote */}
+      <SectionLabel>העיקרון</SectionLabel>
+      <blockquote
+        className="rounded-lg p-6 md:p-8 mb-10"
+        style={{ background: 'var(--coral-bg)', borderRight: '4px solid var(--coral)' }}
+      >
+        <p className="font-playfair leading-snug mb-3" style={{ fontSize: 'clamp(22px, 3.4vw, 30px)', color: 'var(--paper)' }}>
+          כשהמספר סותר את המילה — <em style={{ fontStyle: 'italic', color: 'var(--coral)' }}>זה לא כישלון</em>. זו נקודת ההתחלה.
         </p>
-      </div>
+        <p className="leading-relaxed" style={{ fontSize: 15, color: 'var(--text2)', maxWidth: 620 }}>
+          הכלים שבאפליקציה לא מייצרים תשובות — הם מייצרים חומר גלם לחשיבה. הם עוזרים לזהות
+          את הרגע שבו שלוש השפות מתנגשות, כי שם — ורק שם — נולד הקונספט.
+        </p>
+      </blockquote>
 
       <button
         onClick={() => navigate('/disciplines')}
-        className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-heebo text-sm font-medium hover:opacity-90 transition-opacity"
+        className="text-primary-foreground px-6 py-3 rounded-lg font-heebo text-sm font-medium transition-opacity hover:opacity-90"
+        style={{ background: 'var(--amber)' }}
       >
         המשך לשלוש הדיסציפלינות ←
       </button>
