@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
 import { getProfile } from '../lib/calibration';
 import { getTension, FEEL_LABELS } from '../constants/tensionLogic';
+import { getVisualPrompts } from '../constants/visualPrompts';
 import { useProject } from '../context/ProjectContext';
+import { toast } from '@/components/ui/use-toast';
 
 function SummaryBlock({ color, label, children }) {
   return (
@@ -34,6 +37,26 @@ export default function ProjectCard() {
 
   const handleReset = () => {
     if (window.confirm('להתחיל פרויקט חדש? כל הנתונים הנוכחיים יימחקו לצמיתות.')) reset();
+  };
+
+  const [showVisuals, setShowVisuals] = useState(false);
+  const { prompts: visualPrompts, isDefault: visualsAreDefault } = getVisualPrompts(project);
+
+  const copyPrompt = (text) => {
+    const done = () => toast({ title: 'הפרומפט הועתק' });
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  };
+  const fallbackCopy = (text, done) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); done();
+    } catch { /* clipboard unavailable */ }
   };
 
   return (
@@ -149,6 +172,78 @@ export default function ProjectCard() {
         >
           התחל פרויקט חדש
         </button>
+      </div>
+
+      {/* Visual space prompts — auto-generated from the collected input (not printed) */}
+      <div className="no-print mt-12">
+        <SectionLabel>המחשת המרחב</SectionLabel>
+
+        {!showVisuals ? (
+          <div>
+            <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)', maxWidth: 620 }}>
+              שישה פרומפטים שמתרגמים את הפרויקט שלך — מהכוונה ועד המבנה הבנוי — לסדרת המחשות
+              חזותיות של החלל שהתהליך ייצר.
+            </p>
+            <button
+              onClick={() => setShowVisuals(true)}
+              className="text-primary-foreground px-6 py-3 rounded-lg font-heebo text-sm font-medium transition-opacity hover:opacity-90"
+              style={{ background: 'var(--amber)' }}
+            >
+              צור המחשה למרחב ←
+            </button>
+          </div>
+        ) : (
+          <div>
+            {visualsAreDefault && (
+              <div
+                className="rounded-lg px-4 py-3 mb-5 flex items-center gap-2.5"
+                style={{ background: 'var(--amber-bg)', border: '1px solid var(--amber)' }}
+              >
+                <span className="rounded-full flex-shrink-0" style={{ width: 8, height: 8, background: 'var(--amber)' }} />
+                <p className="text-sm" style={{ color: 'var(--text)' }}>
+                  מבוסס על ברירת מחדל — מלאי את "חדר המתח" והכיול לתוצאה מדויקת לפרויקט שלך.
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {visualPrompts.map((p, i) => (
+                <article key={p.stage} className="elevate bg-card border border-border rounded-lg overflow-hidden">
+                  <div style={{ height: 4, background: p.color }} />
+                  <div className="p-5">
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <span className="rounded-full flex-shrink-0" style={{ width: 9, height: 9, background: p.color }} />
+                      <span className="font-mono text-[10px]" style={{ color: 'var(--text3)' }}>{`0${i + 1}`}</span>
+                      <h3 className="font-playfair" style={{ fontSize: 19, color: 'var(--paper)' }}>{p.titleHe}</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)' }}>{p.distillHe}</p>
+
+                    <div
+                      dir="ltr"
+                      className="rounded-lg p-4 mb-3"
+                      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+                    >
+                      <pre className="font-mono whitespace-pre-wrap" style={{ fontSize: 12, lineHeight: 1.65, color: 'var(--text2)', margin: 0 }}>
+                        {p.prompt}
+                      </pre>
+                    </div>
+
+                    <button
+                      onClick={() => copyPrompt(p.prompt)}
+                      className="font-mono inline-flex items-center gap-2 rounded-lg px-4 py-2 transition-colors"
+                      style={{ fontSize: 12, background: 'transparent', border: `1px solid ${p.color}`, color: p.color }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" />
+                      </svg>
+                      העתק
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
