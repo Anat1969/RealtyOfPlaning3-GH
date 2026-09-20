@@ -204,10 +204,28 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
 }
 .skip-link:focus { top: 12px; }
 
+/* ===== Ambient atmosphere layer ===== */
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: background-color 1.2s ease, opacity 1.2s ease; /* slow, calm */
+}
+
+/* Generous, quiet reading for the large intro paragraphs only */
+.breathing {
+  line-height: 1.95;
+  letter-spacing: 0.01em;
+}
+
 /* ===== Responsive app shell ===== */
 .layout-main {
   margin-right: 240px;
   padding: 52px 56px 80px;
+  position: relative; /* keep content above the ambient layer */
+  z-index: 1;
 }
 .mobile-topbar { display: none; }
 .sidebar-backdrop { display: none; }
@@ -365,4 +383,6 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+  /* Keep the atmosphere static and neutral — no shifting tint */
+  .ambient-layer { opacity: 0 !important; }
 }

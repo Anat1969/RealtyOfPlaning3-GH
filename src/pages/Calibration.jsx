@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
 import { DEFAULT_CALIBRATION, getProfile } from '../lib/calibration';
 import { useProject } from '../context/ProjectContext';
+import { useAmbient } from '../context/AmbientContext';
 
 const SLIDERS = [
   { key: 'c1', label: 'כוונה מנוסחת', src: 'text' },
@@ -16,6 +18,9 @@ const SLIDERS = [
 
 export default function Calibration() {
   const { project, update } = useProject();
+  const { setAmbient } = useAmbient();
+  // All colours present at once — neutral atmosphere
+  useEffect(() => { setAmbient('neutral'); return () => setAmbient('neutral'); }, [setAmbient]);
   const values = project.calibration || DEFAULT_CALIBRATION;
 
   const setValue = (key, v) => update({ calibration: { ...values, [key]: v } });

@@ -6,6 +6,10 @@ import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
 import { getTension, FEEL_LABELS } from '../constants/tensionLogic';
 import { useProject } from '../context/ProjectContext';
+import { useAmbient } from '../context/AmbientContext';
+
+// Which field is focused → which discipline colour the screen leans toward
+const FOCUS_AMBIENT = { word: 'text', width: 'number', feel: 'visual' };
 
 const FEELINGS = Object.entries(FEEL_LABELS).map(([key, label]) => ({ key, label }));
 
@@ -33,8 +37,15 @@ function Field({ color, focused, label, hint, children }) {
 export default function TensionRoom() {
   const navigate = useNavigate();
   const { project, update } = useProject();
+  const { setAmbient } = useAmbient();
   const { intention: word, width, feel } = project;
   const [focused, setFocused] = useState(null);
+
+  // The atmosphere follows attention: the focused field tints the whole screen.
+  useEffect(() => {
+    setAmbient(FOCUS_AMBIENT[focused] || 'neutral');
+    return () => setAmbient('neutral');
+  }, [focused, setAmbient]);
 
   const result = getTension({ word, width, feel });
 

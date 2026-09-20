@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { migrateAllLegacy } from '@/lib/imageStore'
 import { ProjectProvider } from '@/context/ProjectContext'
+import { AmbientProvider } from '@/context/AmbientContext'
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Layout from './components/Layout';
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <ProjectProvider>
+      <AmbientProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <Routes>
@@ -44,6 +46,7 @@ function App() {
         </Router>
         <Toaster />
       </QueryClientProvider>
+      </AmbientProvider>
     </ProjectProvider>
   )
 }

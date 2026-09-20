@@ -22,7 +22,7 @@ export default function ScreenHeader({ eyebrow, title, subtitle, progress }) {
         {renderTitle(title)}
       </h1>
       {subtitle && (
-        <p style={{ fontSize: 'clamp(16px, 2.4vw, 20px)', color: 'var(--text2)', lineHeight: 1.7, fontWeight: 300, maxWidth: 600 }}>
+        <p className="breathing" style={{ fontSize: 'clamp(16px, 2.4vw, 20px)', color: 'var(--text2)', fontWeight: 300, maxWidth: 600 }}>
           {subtitle}
         </p>
       )}

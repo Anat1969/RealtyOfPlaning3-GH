@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import { ACCENT } from '../lib/accent';
 import { useProject } from '../context/ProjectContext';
+import { useAmbient } from '../context/AmbientContext';
 import { getTool1Output, LIMIT_MAP, getTool3Output, getTool4Output, getTool5Status, SYNTHESIS_QUESTIONS, SYNTHESIS_INSTRUCTION } from '../constants/toolsLogic';
 
 const TOOL_DEFS = [
@@ -33,6 +34,15 @@ export default function Tools() {
   const [t5, setT5] = useState({ text: false, number: false, visual: false });
 
   const toggle = (id) => setOpen(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+
+  // The atmosphere follows the open tool's discipline (between → neutral)
+  const { setAmbient } = useAmbient();
+  useEffect(() => {
+    const openTool = TOOL_DEFS.find(t => open.includes(t.id));
+    const src = openTool?.src;
+    setAmbient(src === 'text' || src === 'number' || src === 'visual' ? src : 'neutral');
+    return () => setAmbient('neutral');
+  }, [open, setAmbient]);
 
   const t1Out = t1.trim() ? getTool1Output(t1) : [];
   const t2Data = LIMIT_MAP[t2];

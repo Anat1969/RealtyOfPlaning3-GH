@@ -2,12 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useProgress } from '../hooks/useProgress';
+import { useAmbient } from '../context/AmbientContext';
+
+// Solid truth colour per discipline; visibility is controlled by opacity so the
+// tint can transition smoothly (transitioning a color-mix/transparent value does not).
+const AMBIENT_COLOR = {
+  text: 'var(--purple)',
+  number: 'var(--teal)',
+  visual: 'var(--amber)',
+};
+const AMBIENT_OPACITY = 0.045; // a hint, barely visible
 
 export default function Layout() {
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const progress = useProgress();
+  const { ambient } = useAmbient();
+
+  // Keep the last real colour so returning to 'neutral' only fades opacity (no hue flash)
+  const lastColorRef = useRef('var(--amber)');
+  if (ambient !== 'neutral' && AMBIENT_COLOR[ambient]) lastColorRef.current = AMBIENT_COLOR[ambient];
 
   // Page transition + close the mobile drawer on navigation
   useEffect(() => {
@@ -33,7 +48,14 @@ export default function Layout() {
   }, [menuOpen]);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative' }}>
+      {/* Ambient atmosphere — a breathing tint of the active discipline's colour */}
+      <div
+        className="ambient-layer"
+        aria-hidden="true"
+        style={{ backgroundColor: lastColorRef.current, opacity: ambient === 'neutral' ? 0 : AMBIENT_OPACITY }}
+      />
+
       <a href="#main-content" className="skip-link">דלג לתוכן</a>
 
       {/* Real, cumulative project progress — subtle amber bar at the top of the content */}

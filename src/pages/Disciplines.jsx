@@ -1,12 +1,18 @@
+import { useEffect } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import SectionLabel from '../components/SectionLabel';
 import InsightImage from '../components/InsightImage';
 import { ACCENT } from '../lib/accent';
+import { useAmbient } from '../context/AmbientContext';
 import { DISCIPLINES } from '../constants/data';
 import { DISCIPLINE_PROMPTS } from '../constants/insightPrompts';
 
 export default function Disciplines() {
+  const { setAmbient } = useAmbient();
+  // Overview of all three languages — neutral atmosphere
+  useEffect(() => { setAmbient('neutral'); return () => setAmbient('neutral'); }, [setAmbient]);
+
   return (
     <div>
       <ScreenHeader

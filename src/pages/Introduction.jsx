@@ -5,6 +5,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import LanguagesVenn from '../components/LanguagesVenn';
 import SectionLabel from '../components/SectionLabel';
+import { useAmbient } from '../context/AmbientContext';
 import { ACCENT } from '../lib/accent';
 import { DISCIPLINES } from '../constants/data';
 
@@ -98,7 +99,11 @@ function LanguageCard({ d }) {
 
 export default function Introduction() {
   const navigate = useNavigate();
+  const { setAmbient } = useAmbient();
   const [showLanding, setShowLanding] = useState(() => !sessionStorage.getItem('entered'));
+
+  // Overview page — neutral atmosphere
+  useEffect(() => { setAmbient('neutral'); return () => setAmbient('neutral'); }, [setAmbient]);
 
   const handleEnter = () => {
     sessionStorage.setItem('entered', '1');
@@ -124,11 +129,11 @@ export default function Introduction() {
       {/* ===== Content layer ===== */}
       <SectionLabel>התוכן — נקודת הפתיחה</SectionLabel>
 
-      <p className="leading-snug mb-5" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(24px, 4vw, 34px)', color: 'var(--paper)', maxWidth: 720 }}>
+      <p className="breathing mb-5" style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(24px, 4vw, 34px)', color: 'var(--paper)', maxWidth: 720 }}>
         כל אדריכלית מדברת <span style={{ color: 'var(--purple)' }}>שלוש שפות</span> בו-זמנית —
         גם כשהיא לא שמה לב.
       </p>
-      <p className="leading-loose mb-12" style={{ fontSize: 17, color: 'var(--text)', maxWidth: 640 }}>
+      <p className="breathing mb-12" style={{ fontSize: 17, color: 'var(--text)', maxWidth: 640 }}>
         מילים מנסחות כוונה. מספרים מכריעים חוויה. תמונות חושפות את מה שהגוף כבר יודע.
         המודל הזה לא מוסיף שיטה — הוא נותן שם למה שכבר קורה, והופך אינטואיציה חמקמקה
         לכלי שאפשר לכוון, לתעד, ולחזור אליו.
