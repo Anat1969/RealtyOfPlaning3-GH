@@ -27,19 +27,38 @@ const SECTIONS = [
   },
 ];
 
-export default function Sidebar() {
+function SunIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </svg>
+  );
+}
+function MoonIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+    </svg>
+  );
+}
+
+export default function Sidebar({ open = false, onClose = () => {} }) {
   const { pathname } = useLocation();
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    try { localStorage.setItem('theme', theme); } catch (e) { /* storage unavailable */ }
   }, [theme]);
 
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
 
   return (
     <aside
+      id="app-sidebar"
+      className={`app-sidebar${open ? ' open' : ''}`}
+      aria-label="ניווט ראשי"
       style={{
         width: 240,
         position: 'fixed',
@@ -50,7 +69,7 @@ export default function Sidebar() {
         borderLeft: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
-        zIndex: 50,
+        zIndex: 65,
         overflowY: 'auto',
       }}
     >
@@ -84,19 +103,23 @@ export default function Sidebar() {
                 <Link
                   key={item.path}
                   to={item.path}
+                  onClick={onClose}
+                  aria-current={isActive ? 'page' : undefined}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: 10,
-                    padding: '9px 20px',
+                    padding: '10px 20px',
                     fontSize: 13,
                     color: isActive ? 'var(--paper)' : 'var(--text2)',
                     background: isActive ? 'var(--surface2)' : 'transparent',
                     borderLeft: `2px solid ${isActive ? 'var(--amber)' : 'transparent'}`,
                     fontWeight: isActive ? 500 : 400,
                     textDecoration: 'none',
-                    transition: 'all 0.15s',
+                    transition: 'color 0.15s, background 0.15s',
                   }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--surface2)'; }}
+                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
                 >
                   <span style={{
                     width: 6,
@@ -119,19 +142,24 @@ export default function Sidebar() {
       <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text3)', letterSpacing: '0.08em' }}>WORKFLOW v1.0</p>
         <button
+          type="button"
           onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'מעבר למוד יום' : 'מעבר למוד לילה'}
           title={theme === 'dark' ? 'מוד יום' : 'מוד לילה'}
           style={{
             background: 'var(--surface2)',
             border: '1px solid var(--border2)',
             borderRadius: 6,
-            padding: '4px 8px',
+            width: 30,
+            height: 30,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             cursor: 'pointer',
-            fontSize: 14,
-            lineHeight: 1,
+            color: 'var(--paper)',
           }}
         >
-          {theme === 'dark' ? '☀️' : '🌙'}
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
       </div>
     </aside>

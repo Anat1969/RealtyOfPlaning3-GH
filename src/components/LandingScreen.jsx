@@ -117,7 +117,7 @@ export default function LandingScreen({ onEnter }) {
         <p style={{ ...fadeStyle(1, 0), fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#5a5448', marginBottom: 20 }}>
           מה כבר קיים בעבודה שלך
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+        <div className="landing-disciplines">
           {DISCIPLINES.map((d, i) => (
             <div key={d.name} style={{
               ...fadeStyle(1, i * 0.1),
@@ -135,7 +135,7 @@ export default function LandingScreen({ onEnter }) {
 
       {/* Zone 3: Core idea */}
       <section ref={refs[2]} style={{ maxWidth: 800, margin: '0 auto', padding: '0 48px 64px', width: '100%' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+        <div className="landing-core">
           <blockquote style={{ ...fadeStyle(2, 0), margin: 0 }}>
             <p style={{ fontFamily: 'var(--font-playfair)', fontSize: 28, color: '#e8dfc8', lineHeight: 1.4 }}>
               הידע לא נולד<br />
@@ -171,12 +171,12 @@ export default function LandingScreen({ onEnter }) {
           <p style={{ ...fadeStyle(3, 0), fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#5a5448', textAlign: 'center', marginBottom: 32 }}>
             מה הבינה המלאכותית עושה — ומה נשאר לך
           </p>
-          <div style={{ ...fadeStyle(3, 0.1), display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 32, alignItems: 'start' }}>
+          <div className="landing-labor" style={{ ...fadeStyle(3, 0.1) }}>
             <div>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: '#1D9E75', marginBottom: 14 }}>הבינה מלאכותית מבצעת</p>
               <div>{AI_TAGS.map(t => <Tag key={t}>{t}</Tag>)}</div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0' }}>
+            <div className="landing-labor-divider" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0' }}>
               <div style={{ width: 1, flex: 1, background: 'rgba(200,191,168,0.1)', minHeight: 120 }} />
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#5a5448', writingMode: 'vertical-rl', padding: '12px 0', letterSpacing: '0.1em' }}>חלוקת עבודה</p>
               <div style={{ width: 1, flex: 1, background: 'rgba(200,191,168,0.1)', minHeight: 120 }} />

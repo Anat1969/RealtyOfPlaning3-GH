@@ -15,10 +15,31 @@ export default function Prompts() {
   const setTab = (id, tab) => setTabs(prev => ({ ...prev, [id]: tab }));
 
   const handleCopy = (text, id) => {
-    navigator.clipboard.writeText(text).then(() => {
+    const done = () => {
       setCopied(id);
       setTimeout(() => setCopied(null), 2000);
-    });
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  };
+
+  const fallbackCopy = (text, done) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {
+      /* clipboard unavailable — no-op */
+    }
   };
 
   return (
@@ -38,13 +59,14 @@ export default function Prompts() {
         {PROMPTS.map((prompt) => {
           const isOpen = open.includes(prompt.id);
           const activeTab = tabs[prompt.id] || 'sketch';
-          const activeType = prompt.types[activeTab];
+          const activeType = prompt.types[activeTab] || prompt.types.sketch || Object.values(prompt.types)[0];
 
           return (
             <div key={prompt.id} className="bg-card border border-border rounded-lg overflow-hidden">
               <button
                 className="w-full flex items-center gap-4 p-5 text-right hover:bg-muted/20 transition-colors"
                 onClick={() => toggle(prompt.id)}
+                aria-expanded={isOpen}
               >
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-medium flex-shrink-0"
@@ -56,11 +78,13 @@ export default function Prompts() {
                   <p className="font-playfair text-base text-foreground">{prompt.title}</p>
                   <p className="text-muted-foreground text-xs mt-0.5">{prompt.sub}</p>
                 </div>
-                <span className="text-muted-foreground">{isOpen ? '−' : '+'}</span>
+                <svg className={`chev text-muted-foreground flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </button>
 
               {isOpen && (
-                <div className="px-5 pb-6 pt-1 border-t border-border">
+                <div className="accordion-content px-5 pb-6 pt-1 border-t border-border">
                   {/* Description */}
                   <p
                     className="text-sm text-muted-foreground leading-relaxed mb-5 pr-3"
@@ -70,11 +94,13 @@ export default function Prompts() {
                   </p>
 
                   {/* Tabs */}
-                  <div className="flex gap-1 mb-4">
+                  <div className="flex gap-1 mb-4" role="tablist">
                     {TAB_KEYS.map(tab => (
                       <button
                         key={tab}
                         onClick={() => setTab(prompt.id, tab)}
+                        role="tab"
+                        aria-selected={activeTab === tab}
                         className="px-3 py-1.5 text-xs font-mono rounded transition-colors"
                         style={
                           activeTab === tab

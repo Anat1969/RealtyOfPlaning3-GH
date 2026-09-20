@@ -18,11 +18,11 @@ export default function ScreenHeader({ eyebrow, title, subtitle, progress }) {
           {eyebrow}
         </p>
       )}
-      <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: 62, fontWeight: 700, color: 'var(--paper)', lineHeight: 1.15, marginBottom: 14 }}>
+      <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(32px, 6vw, 62px)', fontWeight: 700, color: 'var(--paper)', lineHeight: 1.15, marginBottom: 14 }}>
         {renderTitle(title)}
-      </h2>
+      </h1>
       {subtitle && (
-        <p style={{ fontSize: 20, color: 'var(--text2)', lineHeight: 1.7, fontWeight: 300, maxWidth: 600 }}>
+        <p style={{ fontSize: 'clamp(16px, 2.4vw, 20px)', color: 'var(--text2)', lineHeight: 1.7, fontWeight: 300, maxWidth: 600 }}>
           {subtitle}
         </p>
       )}

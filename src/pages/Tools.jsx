@@ -57,6 +57,7 @@ export default function Tools() {
               <button
                 className="w-full flex items-center gap-4 p-5 text-right hover:bg-muted/20 transition-colors"
                 onClick={() => toggle(tool.id)}
+                aria-expanded={isOpen}
               >
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-medium flex-shrink-0"
@@ -68,11 +69,13 @@ export default function Tools() {
                   <p className="font-playfair text-base text-foreground">{tool.title}</p>
                   <p className="text-muted-foreground text-xs mt-0.5">{tool.sub}</p>
                 </div>
-                <span className="text-muted-foreground">{isOpen ? '−' : '+'}</span>
+                <svg className={`chev text-muted-foreground flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </button>
 
               {isOpen && (
-                <div className="px-5 pb-6 pt-1 border-t border-border">
+                <div className="accordion-content px-5 pb-6 pt-1 border-t border-border">
                   {/* Tool 1 */}
                   {tool.id === 1 && (
                     <div>

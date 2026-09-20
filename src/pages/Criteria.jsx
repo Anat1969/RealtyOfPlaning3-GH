@@ -29,8 +29,14 @@ export default function Criteria() {
           return (
             <div
               key={c.id}
-              className="bg-card border border-border rounded-lg overflow-hidden cursor-pointer hover:border-primary/30 transition-colors"
+              role="button"
+              tabIndex={0}
+              aria-expanded={isOpen}
+              className="card-hover bg-card border border-border rounded-lg overflow-hidden cursor-pointer"
               onClick={() => toggle(c.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(c.id); }
+              }}
             >
               <div className="p-5" style={{ borderRight: `3px solid ${c.sourceColor}` }}>
                 <div className="flex items-start justify-between gap-3">
@@ -39,11 +45,13 @@ export default function Criteria() {
                     <h3 className="font-playfair text-base text-foreground mb-2">{c.name}</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">{c.def}</p>
                   </div>
-                  <span className="text-muted-foreground text-lg mt-1">{isOpen ? '−' : '+'}</span>
+                  <svg className={`chev text-muted-foreground mt-1 flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </div>
 
                 {isOpen && (
-                  <div className="mt-4 pt-4 border-t border-border space-y-3">
+                  <div className="accordion-content mt-4 pt-4 border-t border-border space-y-3">
                     <div>
                       <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60 mb-1">מקור</p>
                       <p className="text-sm text-muted-foreground leading-relaxed">{c.origin}</p>
