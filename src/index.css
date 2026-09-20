@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&family=Heebo:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Backgrounds — Light default */
+    --bg:        #ffffff;
+    --surface:   #f5f5f5;
+    --surface2:  #eeeeee;
+    --surface3:  #e5e5e5;
+
+    /* Paper */
+    --paper:     #1a1814;
+    --paper2:    #2e2a22;
+
+    /* Text */
+    --text:      #3a3428;
+    --text2:     #6a6050;
+    --text3:     #9a8f7a;
+
+    /* Accent */
+    --purple:    #6057c8;
+    --purple-bg: rgba(96,87,200,0.12);
+    --teal:      #157a5b;
+    --teal-bg:   rgba(21,122,91,0.12);
+    --amber:     #c97f10;
+    --amber-bg:  rgba(201,127,16,0.12);
+    --coral:     #b84520;
+    --coral-bg:  rgba(184,69,32,0.12);
+
+    /* Borders */
+    --border:    rgba(60,50,30,0.12);
+    --border2:   rgba(60,50,30,0.22);
+
+    /* Radius */
+    --r:   8px;
+    --rlg: 14px;
+
+    /* Tailwind shadcn tokens mapped to design system */
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface);
+    --popover-foreground: var(--text);
+    --primary: var(--amber);
+    --primary-foreground: var(--bg);
+    --secondary: var(--surface2);
+    --secondary-foreground: var(--text2);
+    --muted: var(--surface3);
+    --muted-foreground: var(--text2);
+    --accent: var(--amber);
+    --accent-foreground: var(--bg);
+    --destructive: #b84520;
+    --destructive-foreground: var(--paper);
+    --border-color: var(--border);
+    --input: var(--surface2);
+    --ring: var(--amber);
+    --radius: 8px;
+
+    --font-heebo: 'Heebo', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    direction: rtl;
+    background: var(--bg);
+  }
+
+  body {
+    font-family: var(--font-heebo);
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+  }
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --bg:        #141412;
+  --surface:   #1e1d1a;
+  --surface2:  #272522;
+  --surface3:  #2f2d29;
+
+  --paper:     #e8dfc8;
+  --paper2:    #d4c9b0;
+
+  --text:      #c8bfa8;
+  --text2:     #8a8070;
+  --text3:     #5a5448;
+
+  --border:    rgba(200,191,168,0.08);
+  --border2:   rgba(200,191,168,0.15);
+
+  --purple:    #7F77DD;
+  --teal:      #1D9E75;
+  --amber:     #EF9F27;
+  --coral:     #D85A30;
+
+  --purple-bg: rgba(127,119,221,0.15);
+  --teal-bg:   rgba(29,158,117,0.15);
+  --amber-bg:  rgba(239,159,39,0.15);
+  --coral-bg:  rgba(216,90,48,0.15);
+}
+
+/* Progress bar gradient */
+.progress-fill-gradient {
+  background: linear-gradient(90deg, var(--purple), var(--teal), var(--amber));
+}
+
+/* Fade up animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.35s ease both;
+}
+
+/* Range input styling */
+input[type=range] {
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--surface3);
+  width: 100%;
+  border-radius: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--amber);
+  cursor: pointer;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
