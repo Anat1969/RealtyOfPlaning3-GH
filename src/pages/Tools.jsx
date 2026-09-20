@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
+import SectionLabel from '../components/SectionLabel';
+import { ACCENT } from '../lib/accent';
 import { getTool1Output, LIMIT_MAP, getTool3Output, getTool4Output, getTool5Status, SYNTHESIS_QUESTIONS, SYNTHESIS_INSTRUCTION } from '../constants/toolsLogic';
 
 const TOOL_DEFS = [
-  { id: 1, title: 'כוונה מנוסחת', sub: 'ניסוח חד של הכוונה המרחבית' },
-  { id: 2, title: 'מגבלה מדויקת', sub: 'טווחי מידות לפי אופי החלל' },
-  { id: 3, title: 'אמת חושית', sub: 'תרגום חומר לחוויה גופנית' },
-  { id: 4, title: 'מתח פורה', sub: 'גילוי הסתירה הפורה בין שתי כוונות' },
-  { id: 5, title: 'נוכחות בו-זמנית', sub: 'בדיקת נוכחות שלושת הדיסציפלינות' },
-  { id: 6, title: 'רגע הסינתזה', sub: 'ארבע שאלות לזיהוי הרגע' },
+  { id: 1, title: 'כוונה מנוסחת', sub: 'ניסוח חד של הכוונה המרחבית', src: 'text' },
+  { id: 2, title: 'מגבלה מדויקת', sub: 'טווחי מידות לפי אופי החלל', src: 'number' },
+  { id: 3, title: 'אמת חושית', sub: 'תרגום חומר לחוויה גופנית', src: 'visual' },
+  { id: 4, title: 'מתח פורה', sub: 'גילוי הסתירה הפורה בין שתי כוונות', src: 'between' },
+  { id: 5, title: 'נוכחות בו-זמנית', sub: 'בדיקת נוכחות שלושת הדיסציפלינות', src: 'between' },
+  { id: 6, title: 'רגע הסינתזה', sub: 'ארבע שאלות לזיהוי הרגע', src: 'between' },
 ];
 
 const PRESENCE_COLORS = {
@@ -49,27 +51,30 @@ export default function Tools() {
         why="הכלים לא מייצרים תשובות — הם מייצרים חומר גלם לחשיבה. הערך הוא בשאלות שהם מעלים, לא בתוצאות שהם מחזירים."
       />
 
-      <div className="space-y-3">
+      <SectionLabel>שישה כלים לעבודה</SectionLabel>
+      <div className="space-y-4">
         {TOOL_DEFS.map((tool) => {
           const isOpen = open.includes(tool.id);
+          const { c, bg } = ACCENT[tool.src];
           return (
-            <div key={tool.id} className="bg-card border border-border rounded-lg overflow-hidden">
+            <div key={tool.id} className="elevate bg-card border border-border rounded-lg overflow-hidden">
+              <div style={{ height: 4, background: c }} />
               <button
                 className="w-full flex items-center gap-4 p-5 text-right hover:bg-muted/20 transition-colors"
                 onClick={() => toggle(tool.id)}
                 aria-expanded={isOpen}
               >
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-medium flex-shrink-0"
-                  style={{ background: 'rgba(239,159,39,0.15)', color: '#EF9F27', border: '1px solid rgba(239,159,39,0.4)' }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center font-mono text-sm font-medium flex-shrink-0"
+                  style={{ background: bg, color: c, border: `1px solid ${c}66` }}
                 >
                   {tool.id}
                 </div>
                 <div className="flex-1 text-right">
-                  <p className="font-playfair text-base text-foreground">{tool.title}</p>
-                  <p className="text-muted-foreground text-xs mt-0.5">{tool.sub}</p>
+                  <p className="font-playfair" style={{ fontSize: 18, color: 'var(--paper)' }}>{tool.title}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text2)' }}>{tool.sub}</p>
                 </div>
-                <svg className={`chev text-muted-foreground flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg className={`chev flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </button>

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
+import SectionLabel from '../components/SectionLabel';
+import { ACCENT } from '../lib/accent';
 import { CRITERIA } from '../constants/data';
 
 export default function Criteria() {
@@ -23,53 +25,59 @@ export default function Criteria() {
         why="שישת הקריטריונים הם שפת המדידה של המודל. בלי להכיר אותם, לא ניתן להשתמש בכלי הכיול בדף הבא."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {CRITERIA.map((c) => {
-          const isOpen = expanded.includes(c.id);
+      <SectionLabel>ששת הקריטריונים</SectionLabel>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {CRITERIA.map((crit) => {
+          const isOpen = expanded.includes(crit.id);
+          const { c, bg } = ACCENT[crit.source];
           return (
-            <div
-              key={c.id}
+            <article
+              key={crit.id}
               role="button"
               tabIndex={0}
               aria-expanded={isOpen}
-              className="card-hover bg-card border border-border rounded-lg overflow-hidden cursor-pointer"
-              onClick={() => toggle(c.id)}
+              className="elevate bg-card border border-border rounded-lg overflow-hidden cursor-pointer"
+              onClick={() => toggle(crit.id)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(c.id); }
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(crit.id); }
               }}
             >
-              <div className="p-5" style={{ borderRight: `3px solid ${c.sourceColor}` }}>
+              <div style={{ height: 4, background: c }} />
+              <div className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <p className="font-mono text-[11px] text-muted-foreground mb-1">0{c.id}</p>
-                    <h3 className="font-playfair text-base text-foreground mb-2">{c.name}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{c.def}</p>
+                    <div className="flex items-center gap-2.5 mb-2">
+                      <span className="rounded-full flex-shrink-0" style={{ width: 9, height: 9, background: c }} />
+                      <h3 className="font-playfair leading-tight" style={{ fontSize: 19, color: 'var(--paper)' }}>{crit.name}</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--text2)' }}>{crit.def}</p>
                   </div>
-                  <svg className={`chev text-muted-foreground mt-1 flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <svg className={`chev flex-shrink-0 mt-1${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
 
                 {isOpen && (
-                  <div className="accordion-content mt-4 pt-4 border-t border-border space-y-3">
+                  <div className="accordion-content mt-4 pt-4 space-y-3" style={{ borderTop: '1px solid var(--border)' }}>
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60 mb-1">מקור</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{c.origin}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: 'var(--text3)' }}>מקור</p>
+                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>{crit.origin}</p>
                     </div>
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60 mb-1">ביטוי מרחבי</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{c.spatial}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: 'var(--text3)' }}>ביטוי מרחבי</p>
+                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>{crit.spatial}</p>
                     </div>
                     <span
-                      className="inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded mt-1"
-                      style={{ color: c.sourceColor, background: c.sourceBg }}
+                      className="inline-block font-mono text-[10px] uppercase tracking-[0.12em] rounded-full px-2.5 py-1 mt-1"
+                      style={{ color: c, background: bg }}
                     >
-                      {c.sourceLabel}
+                      {crit.sourceLabel}
                     </span>
                   </div>
                 )}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>

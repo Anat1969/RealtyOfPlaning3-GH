@@ -4,23 +4,13 @@ import LandingScreen from '../components/LandingScreen';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
 import LanguagesVenn from '../components/LanguagesVenn';
+import SectionLabel from '../components/SectionLabel';
+import { ACCENT } from '../lib/accent';
 import { DISCIPLINES } from '../constants/data';
 
 /* Theme-aware colours (richer in light mode than the dark-tuned hex in data.js) */
-const VAR = { text: 'var(--purple)', number: 'var(--teal)', visual: 'var(--amber)' };
-const VARBG = { text: 'var(--purple-bg)', number: 'var(--teal-bg)', visual: 'var(--amber-bg)' };
-
-/* Labelled divider that opens a CONTENT zone (kept distinct from the tool/guidance) */
-function SectionLabel({ children }) {
-  return (
-    <div className="flex items-center gap-3 mb-6">
-      <span className="font-mono text-[11px] uppercase tracking-[0.14em] whitespace-nowrap" style={{ color: 'var(--text2)' }}>
-        {children}
-      </span>
-      <span className="flex-1 rule-gradient" style={{ opacity: 0.45 }} />
-    </div>
-  );
-}
+const VAR = { text: ACCENT.text.c, number: ACCENT.number.c, visual: ACCENT.visual.c };
+const VARBG = { text: ACCENT.text.bg, number: ACCENT.number.bg, visual: ACCENT.visual.bg };
 
 /* ── Living micro-visuals: each card *shows* what its language does ── */
 

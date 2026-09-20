@@ -128,21 +128,12 @@
   animation: fadeUp 0.35s ease both;
 }
 
-/* Range input styling */
+/* Range input styling — native accent-color so each slider can carry its own hue */
 input[type=range] {
-  -webkit-appearance: none;
-  height: 3px;
-  background: var(--surface3);
   width: 100%;
-  border-radius: 2px;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--amber);
+  height: 6px;
   cursor: pointer;
+  accent-color: var(--amber);
 }
 
 /* Custom scrollbar */

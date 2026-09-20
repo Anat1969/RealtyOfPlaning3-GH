@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
+import SectionLabel from '../components/SectionLabel';
+import { ACCENT } from '../lib/accent';
 import { PROMPTS } from '../constants/prompts';
 
 const TAB_KEYS = ['sketch', 'technical', 'render'];
 const TAB_LABELS = { sketch: 'סקיצה', technical: 'שרטוט טכני', render: 'רנדר' };
+
+// Map each prompt to the model's colour language (6 prompts ↔ 6 criteria)
+const PROMPT_SRC = { 1: 'text', 2: 'number', 3: 'visual', 4: 'between', 5: 'between', 6: 'between' };
 
 export default function Prompts() {
   const [open, setOpen] = useState([]);
@@ -55,30 +60,33 @@ export default function Prompts() {
         why="פרומפט כללי נותן תוצאה כללית. ההתאמה לפרויקט הספציפי — שינוי חומר, מידה, אווירה — היא מה שהופך את הכלי לאדריכלי."
       />
 
-      <div className="space-y-3">
+      <SectionLabel>שמונה עשר פרומפטים</SectionLabel>
+      <div className="space-y-4">
         {PROMPTS.map((prompt) => {
           const isOpen = open.includes(prompt.id);
           const activeTab = tabs[prompt.id] || 'sketch';
           const activeType = prompt.types[activeTab] || prompt.types.sketch || Object.values(prompt.types)[0];
+          const acc = ACCENT[PROMPT_SRC[prompt.id]] || { c: prompt.accentColor, bg: prompt.accentBg };
 
           return (
-            <div key={prompt.id} className="bg-card border border-border rounded-lg overflow-hidden">
+            <div key={prompt.id} className="elevate bg-card border border-border rounded-lg overflow-hidden">
+              <div style={{ height: 4, background: acc.c }} />
               <button
                 className="w-full flex items-center gap-4 p-5 text-right hover:bg-muted/20 transition-colors"
                 onClick={() => toggle(prompt.id)}
                 aria-expanded={isOpen}
               >
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-medium flex-shrink-0"
-                  style={{ background: prompt.accentBg, color: prompt.accentColor, border: `1px solid ${prompt.accentColor}55` }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center font-mono text-sm font-medium flex-shrink-0"
+                  style={{ background: acc.bg, color: acc.c, border: `1px solid ${acc.c}66` }}
                 >
                   {prompt.id}
                 </div>
                 <div className="flex-1 text-right">
-                  <p className="font-playfair text-base text-foreground">{prompt.title}</p>
-                  <p className="text-muted-foreground text-xs mt-0.5">{prompt.sub}</p>
+                  <p className="font-playfair" style={{ fontSize: 18, color: 'var(--paper)' }}>{prompt.title}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text2)' }}>{prompt.sub}</p>
                 </div>
-                <svg className={`chev text-muted-foreground flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg className={`chev flex-shrink-0${isOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={acc.c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </button>
@@ -87,8 +95,8 @@ export default function Prompts() {
                 <div className="accordion-content px-5 pb-6 pt-1 border-t border-border">
                   {/* Description */}
                   <p
-                    className="text-sm text-muted-foreground leading-relaxed mb-5 pr-3"
-                    style={{ borderRight: `3px solid ${prompt.accentColor}33` }}
+                    className="text-sm leading-relaxed mb-5 pr-3"
+                    style={{ borderRight: `3px solid ${acc.c}`, color: 'var(--text)' }}
                   >
                     {prompt.desc}
                   </p>
@@ -104,8 +112,8 @@ export default function Prompts() {
                         className="px-3 py-1.5 text-xs font-mono rounded transition-colors"
                         style={
                           activeTab === tab
-                            ? { borderBottom: `2px solid ${prompt.accentColor}`, color: prompt.accentColor, background: prompt.accentBg }
-                            : { color: 'hsl(var(--muted-foreground))', background: 'transparent', borderBottom: '2px solid transparent' }
+                            ? { borderBottom: `2px solid ${acc.c}`, color: acc.c, background: acc.bg }
+                            : { color: 'var(--text2)', background: 'transparent', borderBottom: '2px solid transparent' }
                         }
                       >
                         {TAB_LABELS[tab]}

@@ -1,5 +1,7 @@
 import ScreenHeader from '../components/ScreenHeader';
 import PageGuide from '../components/PageGuide';
+import SectionLabel from '../components/SectionLabel';
+import { ACCENT } from '../lib/accent';
 import { DISCIPLINES } from '../constants/data';
 
 export default function Disciplines() {
@@ -16,33 +18,53 @@ export default function Disciplines() {
         why="זיהוי שלושת הדיסציפלינות בפרויקט קונקרטי הוא הצעד הראשון לעבודה מכוונת — לא ניתן לנהל מה שלא רואים."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {DISCIPLINES.map((d) => (
-          <div key={d.id} className="bg-card border border-border rounded-lg overflow-hidden">
-            {/* Card Header */}
-            <div
-              className="flex items-center gap-4 p-6 border-b border-border"
-              style={{ borderRight: `3px solid ${d.accentColor}` }}
-            >
-              <span className="text-3xl font-mono" style={{ color: d.accentColor }}>{d.icon}</span>
-              <div>
-                <h3 className="font-playfair text-xl text-foreground">{d.name}</h3>
-                <p className="text-muted-foreground text-base">{d.tagline}</p>
-              </div>
-            </div>
-            {/* Roles Grid */}
-            <div className="grid grid-cols-1 gap-0">
-              {d.roles.map((role, i) => (
-                <div key={i} className="p-4 border-b border-l border-border last:border-b-0">
-                  <p className="font-mono text-xs uppercase tracking-widest mb-2" style={{ color: d.accentColor }}>
-                    {role.title}
-                  </p>
-                  <p className="text-muted-foreground text-base leading-relaxed">{role.desc}</p>
+      <SectionLabel>שלוש השפות לעומק</SectionLabel>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {DISCIPLINES.map((d) => {
+          const { c, bg } = ACCENT[d.id];
+          return (
+            <article key={d.id} className="elevate bg-card border border-border rounded-lg overflow-hidden">
+              {/* vivid top accent bar */}
+              <div style={{ height: 4, background: c }} />
+
+              {/* Card header — clear hierarchy */}
+              <div className="p-6 border-b border-border">
+                <div className="flex items-center gap-3 mb-2.5">
+                  <span className="rounded-full flex-shrink-0" style={{ width: 10, height: 10, background: c }} />
+                  <h3 className="font-playfair leading-tight" style={{ fontSize: 23, color: 'var(--paper)' }}>{d.name}</h3>
+                  <span aria-hidden="true" className="font-mono" style={{ marginInlineStart: 'auto', fontSize: 28, color: c, opacity: 0.22, lineHeight: 1 }}>
+                    {d.icon}
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
+                <span
+                  className="inline-block font-mono text-[10px] uppercase tracking-[0.12em] rounded-full px-2.5 py-1 mb-3"
+                  style={{ background: bg, color: c }}
+                >
+                  {d.truth}
+                </span>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text2)' }}>{d.tagline}</p>
+              </div>
+
+              {/* Roles */}
+              <div>
+                {d.roles.map((role, i) => (
+                  <div
+                    key={i}
+                    className="p-4"
+                    style={{ borderBottom: i < d.roles.length - 1 ? '1px solid var(--border)' : 'none' }}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="rounded-full flex-shrink-0" style={{ width: 5, height: 5, background: c }} />
+                      <p className="font-mono text-xs uppercase tracking-widest" style={{ color: c }}>{role.title}</p>
+                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>{role.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   );
