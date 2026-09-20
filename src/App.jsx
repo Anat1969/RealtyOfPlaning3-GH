@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
+import { migrateAllLegacy } from '@/lib/imageStore'
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Layout from './components/Layout';
@@ -14,6 +16,9 @@ import Tools from './pages/Tools';
 import Prompts from './pages/Prompts';
 
 function App() {
+  // Move any images saved by the old (localStorage) version into durable IndexedDB
+  useEffect(() => { migrateAllLegacy(); }, []);
+
   return (
     <QueryClientProvider client={queryClientInstance}>
       <Router>

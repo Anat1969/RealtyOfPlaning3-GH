@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { idbEntries } from '../lib/imageStore';
 
 const SECTIONS = [
   {
@@ -53,6 +54,24 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+
+  const [backupState, setBackupState] = useState('idle'); // idle | working | empty
+  const backupImages = async () => {
+    setBackupState('working');
+    try {
+      const entries = await idbEntries();
+      if (!entries.length) { setBackupState('empty'); setTimeout(() => setBackupState('idle'), 2200); return; }
+      for (const [imgId, blob] of entries) {
+        const href = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = href; a.download = `${imgId}.webp`;
+        document.body.appendChild(a); a.click(); a.remove();
+        await new Promise(r => setTimeout(r, 400));
+        URL.revokeObjectURL(href);
+      }
+    } catch { /* ignore */ }
+    setBackupState('idle');
+  };
 
   return (
     <aside
@@ -141,6 +160,28 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
       {/* Footer */}
       <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text3)', letterSpacing: '0.08em' }}>WORKFLOW v1.0</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button
+          type="button"
+          onClick={backupImages}
+          aria-label="גיבוי כל התמונות שהעליתי"
+          title={backupState === 'empty' ? 'אין תמונות לגיבוי' : 'גיבוי כל התמונות'}
+          style={{
+            background: 'var(--surface2)', border: '1px solid var(--border2)', borderRadius: 6,
+            width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: backupState === 'empty' ? 'var(--text3)' : 'var(--paper)',
+          }}
+        >
+          {backupState === 'working' ? (
+            <span className="w-3.5 h-3.5 rounded-full animate-spin" style={{ border: '2px solid var(--surface3)', borderTopColor: 'var(--amber)' }} />
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          )}
+        </button>
         <button
           type="button"
           onClick={toggleTheme}
@@ -161,6 +202,7 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
         >
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
+        </div>
       </div>
     </aside>
   );

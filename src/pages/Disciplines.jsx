@@ -37,7 +37,7 @@ export default function Disciplines() {
                   prompt={DISCIPLINE_PROMPTS[d.id]}
                   color={c}
                   bg={bg}
-                  ratio="16 / 10"
+                  ratio="1 / 1"
                   label="המחשת השפה"
                 />
               </div>

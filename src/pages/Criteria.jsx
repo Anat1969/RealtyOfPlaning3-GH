@@ -84,7 +84,7 @@ export default function Criteria() {
                         prompt={CRITERION_PROMPTS[crit.id]}
                         color={c}
                         bg={bg}
-                        ratio="16 / 9"
+                        ratio="1 / 1"
                         label="המחשת הקריטריון"
                       />
                     </div>
