@@ -74,6 +74,8 @@ export default function Layout() {
             כלי עבודה לאדריכל
           </p>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <ai-menu />
         <button
           type="button"
           onClick={() => setMenuOpen(o => !o)}
@@ -103,6 +105,7 @@ export default function Layout() {
             </svg>
           )}
         </button>
+        </div>
       </div>
 
       {/* Backdrop (mobile, only when drawer open) */}
