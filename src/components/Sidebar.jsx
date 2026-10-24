@@ -107,6 +107,7 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text3)' }}>
           כלי עבודה לאדריכל
         </p>
+        <div className="sidebar-ai-menu" style={{ marginTop: 14 }}><ai-menu /></div>
       </div>
 
       {/* Nav */}

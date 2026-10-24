@@ -231,6 +231,7 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
 .sidebar-backdrop { display: none; }
 
 @media (max-width: 768px) {
+  .sidebar-ai-menu { display: none; } /* the mobile top bar holds the A&I button */
   .layout-main {
     margin-right: 0 !important;
     padding: 80px 20px 64px !important;
